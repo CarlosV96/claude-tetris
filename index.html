@@ -10,7 +10,10 @@
   <h1 class="game-title">TETRIS</h1>
   <div class="wrapper">
     <div class="game-container">
-      <canvas id="board" width="300" height="600"></canvas>
+      <div class="board-wrap">
+        <canvas id="board" width="300" height="600"></canvas>
+        <div id="power-banner" class="power-banner hidden"></div>
+      </div>
 
       <aside class="panel">
         <div class="panel-section">
@@ -39,6 +42,17 @@
             <li><kbd>↓</kbd> bajar</li>
             <li><kbd>Space</kbd> caída</li>
             <li><kbd>P</kbd> pausa</li>
+          </ul>
+        </div>
+
+        <div class="panel-section controls">
+          <span class="label">POWER-UPS</span>
+          <ul>
+            <li><kbd>B</kbd> Bomba — destruye 3×3</li>
+            <li><kbd>R</kbd> Rayo — limpia fila y columna</li>
+            <li><kbd>T</kbd> Tinte — borra el color dominante</li>
+            <li><kbd>G</kbd> Gravedad — compacta huecos</li>
+            <li><kbd>F</kbd> Congelar — detiene la caída 5s</li>
           </ul>
         </div>
       </aside>
