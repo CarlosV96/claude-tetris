@@ -1,0 +1,60 @@
+name: Claude Issue Triage
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Analizar y clasificar el issue
+        uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: >-
+            --allowed-tools "Bash(gh label:*),Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Read,Grep,Glob"
+          prompt: |
+            Eres el clasificador (triage) automático de issues de este repositorio de Tetris
+            (JS vanilla, todo en game.js). Analiza el issue #${{ github.event.issue.number }}
+            del repositorio ${{ github.repository }}.
+
+            Pasos:
+            1. Lee el issue con: gh issue view ${{ github.event.issue.number }}
+            2. Explora el código relevante (game.js, index.html, style.css) con Read/Grep/Glob
+               para fundamentar el análisis.
+            3. Clasifica el issue usando ESTA taxonomía de labels:
+               - tipo:      "type: bug", "type: feature", "type: docs", "type: question"
+               - área:      "area: gameplay", "area: ui", "area: scoring", "area: controls", "area: build"
+               - prioridad: "priority: low", "priority: medium", "priority: high"
+               Elige 1 de tipo, las de área que apliquen y 1 de prioridad.
+            4. Antes de asignar, crea los labels que falten (idempotente):
+               gh label create "<label>" --color <hex> --description "<desc>" --force
+            5. Asigna los labels:
+               gh issue edit ${{ github.event.issue.number }} --add-label "<l1>,<l2>,..."
+            6. Publica UN comentario en español con el diagnóstico general usando:
+               gh issue comment ${{ github.event.issue.number }} --body "<markdown>"
+               El comentario debe tener estas secciones:
+               ## 🔎 Diagnóstico automático
+               **Resumen**: ...
+               **Causa probable / análisis**: ...
+               **Archivos y funciones afectadas**: ... (rutas y nombres de game.js, etc.)
+               **Enfoque sugerido para la solución**: pasos concretos.
+               **Labels asignados**: ...
+
+            Reglas:
+            - Escribe TODO el comentario en español.
+            - NO edites el título ni el cuerpo del issue (solo labels + comentario).
+            - Si el issue es ambiguo, asígnale "type: question" y pide la información faltante
+              en el comentario.
