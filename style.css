@@ -35,33 +35,12 @@ body {
   align-items: flex-start;
 }
 
-.board-wrap {
-  position: relative;
-}
-
 #board {
   display: block;
   border: 1px solid #2a2a3a;
   background: #1a1a25;
   border-radius: 4px;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
-}
-
-.power-banner {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 4px;
-  text-shadow: 0 0 12px rgba(0, 0, 0, 0.9), 0 0 4px currentColor;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-
-.power-banner.hidden {
-  display: none;
 }
 
 /* ---- Panel lateral ---- */
